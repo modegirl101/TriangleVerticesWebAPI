@@ -8,33 +8,7 @@ using System.Web.Http.ValueProviders.Providers;
 namespace TriangleVerticesWebAPI.Models
 {
     public static class TriangleFunctions
-    {
-        internal static bool isXNumberValid(int xNumber, TriangleGrid tGrid)
-        {
-            return xNumber % 10 == 0 && xNumber <= (tGrid.ColumnCount / 2) * tGrid.PixelCount;
-        }
-        internal static bool isYNumberValid(int yNumber, TriangleGrid tGrid)
-        {
-            return yNumber % 10 == 0 && yNumber <= tGrid.RowCount * tGrid.PixelCount;
-        }
-        internal static bool isLetterValid(char letter, TriangleGrid tGrid)
-        {
-            if (!char.IsLetter(letter))
-            {
-                return false;
-            }
-
-            return char.ToUpper(letter) - 64 <= tGrid.RowCount;
-        }
-        internal static bool IsColumnValid(int column, TriangleGrid tGrid)
-        {
-            return column >= 1 && column <= tGrid.ColumnCount;
-        }
-        internal static int GetColumn(Triangle.TriangleHypotenuseSide side, int col)
-        {
-            return side == Triangle.TriangleHypotenuseSide.Right ? (col * 2) : (col * 2) - 1;
-        }
-
+    {           
         internal static string GetRowAndColumnByVertices(Triangle triangle, TriangleGrid tGrid)
         {
             //highest Y
@@ -48,8 +22,7 @@ namespace TriangleVerticesWebAPI.Models
 
             char rowChar = (char)(65 + (row - 1));
             return string.Concat(rowChar, GetColumn(triangle.HypotenuseSide, col));
-        }
-        
+        }        
         internal static string GetVerticesByRowAndColumn(char row, int column, TriangleGrid tGrid)
         {
             int rowNumber = row % 32; //get the index of the row -- this returns the index of the alphabet according to the row
@@ -87,7 +60,6 @@ namespace TriangleVerticesWebAPI.Models
             sb.Append($"{triangle.Vector1X},{triangle.Vector1Y},{triangle.Vector2X},{triangle.Vector2Y},{triangle.Vector3X},{triangle.Vector3Y}");
             return sb.ToString();
         }
-
         internal static bool ValidateVertices(string vertices, ShapesGrid grid, out Triangle triangle)
         {
             triangle = new Triangle();
@@ -202,6 +174,31 @@ namespace TriangleVerticesWebAPI.Models
 
             //validation has failed
             return false;
+        }
+        internal static int GetColumn(Triangle.TriangleHypotenuseSide side, int col)
+        {
+            return side == Triangle.TriangleHypotenuseSide.Right ? (col * 2) : (col * 2) - 1;
+        }
+        internal static bool isXNumberValid(int xNumber, TriangleGrid tGrid)
+        {
+            return xNumber % 10 == 0 && xNumber <= (tGrid.ColumnCount / 2) * tGrid.PixelCount;
+        }
+        internal static bool isYNumberValid(int yNumber, TriangleGrid tGrid)
+        {
+            return yNumber % 10 == 0 && yNumber <= tGrid.RowCount * tGrid.PixelCount;
+        }
+        internal static bool isLetterValid(char letter, TriangleGrid tGrid)
+        {
+            if (!char.IsLetter(letter))
+            {
+                return false;
+            }
+
+            return char.ToUpper(letter) - 64 <= tGrid.RowCount;
+        }
+        internal static bool IsColumnValid(int column, TriangleGrid tGrid)
+        {
+            return column >= 1 && column <= tGrid.ColumnCount;
         }
     }
 }

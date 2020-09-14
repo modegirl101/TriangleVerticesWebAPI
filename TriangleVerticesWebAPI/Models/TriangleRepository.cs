@@ -19,7 +19,6 @@ namespace TriangleVerticesWebAPI.Models
 
             return "Invalid Vector Supplied";     
         }       
-
         public string GetTriangleVerticesByRowAndColumn(ShapesGrid shapeGrid, char row, int column)
         {
             TriangleGrid tGrid = (TriangleGrid)shapeGrid;       
