@@ -28,7 +28,7 @@
                 return;
             }
 
-            xhttp.open("GET", "http://localhost:51634/api/Triangle?row=" + document.getElementById('txtRow').value + "&column=" + document.getElementById('txtCol').value, true);
+            xhttp.open("GET", "http://localhost:51634/api/Triangle/" + document.getElementById('txtRow').value + "/" + document.getElementById('txtCol').value, true);
             xhttp.send();
             xhttp.onload = () => {
                 document.getElementById("divCalcVerts").textContent = xhttp.response;
@@ -37,7 +37,7 @@
 
         function GetRowAndColumn() {
             var xhttp = new XMLHttpRequest();
-            xhttp.open("GET", "http://localhost:51634/api/Triangle?vertices=" + document.getElementById('txtVertices').value, true);
+            xhttp.open("GET", "http://localhost:51634/api/Triangle/" + document.getElementById('txtVertices').value, true);
             xhttp.send();
             xhttp.onload = () => {
                 document.getElementById("divCalcRowAndCol").textContent = xhttp.response;
