@@ -28,9 +28,6 @@
                 return;
             }
 
-            var col = document.getElementById('txtCol').value;
-
-
             xhttp.open("GET", "http://localhost:51634/api/Triangle?row=" + document.getElementById('txtRow').value + "&column=" + document.getElementById('txtCol').value, true);
             xhttp.send();
             xhttp.onload = () => {
