@@ -8,7 +8,7 @@ namespace TriangleVerticesWebAPI.Models
         internal static string GetRowAndColumnByVertices(Triangle triangle, TriangleGrid tGrid)
         {
             //highest Y
-            int highY = triangle.HypotenuseSide == Triangle.TriangleHypotenuseSide.Right ? triangle.Vector3Y : triangle.Vector1Y;
+            int highY = triangle.RightAngle == Triangle.RightAngleSide.Right ? triangle.Vector3Y : triangle.Vector1Y;
 
             //highest x
             int highX = triangle.Vector3X;
@@ -17,7 +17,7 @@ namespace TriangleVerticesWebAPI.Models
             int col = highX / tGrid.PixelCount;
 
             char rowChar = (char)(65 + (row - 1));
-            return string.Concat(rowChar, GetColumn(triangle.HypotenuseSide, col));
+            return string.Concat(rowChar, GetColumn(triangle.RightAngle, col));
         }        
         internal static string GetVerticesByRowAndColumn(char row, int column, TriangleGrid tGrid)
         {
@@ -27,8 +27,8 @@ namespace TriangleVerticesWebAPI.Models
             Triangle triangle = new Triangle();
             if (column % 2 > 0)
             {
-                //column is odd so hypotenuse is on the left 
-                triangle.HypotenuseSide = Triangle.TriangleHypotenuseSide.Left;
+                //column is odd so right angle is on the left 
+                triangle.RightAngle = Triangle.RightAngleSide.Left;
 
                 triangle.Vector1X = colNumber * tGrid.PixelCount;
                 triangle.Vector1Y = ((rowNumber - 1) * tGrid.PixelCount) + tGrid.PixelCount;
@@ -41,7 +41,7 @@ namespace TriangleVerticesWebAPI.Models
             }
             else
             {
-                //hypotenuse on the right
+                //angle on the right
                 triangle.Vector1X = colNumber * tGrid.PixelCount;
                 triangle.Vector1Y = (rowNumber - 1) * tGrid.PixelCount;
 
@@ -78,7 +78,7 @@ namespace TriangleVerticesWebAPI.Models
                     {
                         switch (i)
                         {
-                            //0 and 1 = hypotenuse
+                            //0 and 1 = right angle
                             case 0:
                                 if (!isXNumberValid(outNum, tGrid))
                                     return false;
@@ -129,7 +129,7 @@ namespace TriangleVerticesWebAPI.Models
                 //continue validation
                 if (triangle.Vector1Y > triangle.Vector2Y)
                 {
-                    triangle.HypotenuseSide = Triangle.TriangleHypotenuseSide.Left;
+                    triangle.RightAngle = Triangle.RightAngleSide.Left;
 
                     //40,10,40,0,50,10    A9 
                     //30,30,30,20,40,30   C7
@@ -150,7 +150,7 @@ namespace TriangleVerticesWebAPI.Models
                 }
                 else
                 {
-                    triangle.HypotenuseSide = Triangle.TriangleHypotenuseSide.Right;
+                    triangle.RightAngle = Triangle.RightAngleSide.Right;
 
                     //40,0,30,0,40,10     A8 
                     //40,20,30,20,40,30   C8
@@ -174,9 +174,9 @@ namespace TriangleVerticesWebAPI.Models
             //validation has failed
             return false;
         }
-        internal static int GetColumn(Triangle.TriangleHypotenuseSide side, int col)
+        internal static int GetColumn(Triangle.RightAngleSide side, int col)
         {
-            return side == Triangle.TriangleHypotenuseSide.Right ? (col * 2) : (col * 2) - 1;
+            return side == Triangle.RightAngleSide.Right ? (col * 2) : (col * 2) - 1;
         }
         internal static bool isXNumberValid(int xNumber, TriangleGrid tGrid)
         {

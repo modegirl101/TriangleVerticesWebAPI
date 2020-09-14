@@ -8,8 +8,8 @@ namespace TriangleVerticesWebAPI.Models
 {
     public class Triangle : Shape
     {
-        public enum TriangleHypotenuseSide { Left, Right }
-        public TriangleHypotenuseSide HypotenuseSide { get; set; }
+        public enum RightAngleSide { Left, Right }
+        public RightAngleSide RightAngle { get; set; }
         public int Vector1Y { get; set; }
         public int Vector1X { get; set; }
         public int Vector2Y { get; set; }
