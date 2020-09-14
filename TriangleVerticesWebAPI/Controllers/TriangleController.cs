@@ -21,7 +21,7 @@ namespace TriangleVerticesWebAPI.Controllers
         {
             string result = triangleRepository.GetTriangleVerticesByRowAndColumn(triangleGrid, row, column);
 
-            if (result.ToLower().LastIndexOf("invalid") > -1)
+            if (result.ToLower().Contains("invalid"))
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, result);
             }
@@ -35,7 +35,7 @@ namespace TriangleVerticesWebAPI.Controllers
         {
             string result = triangleRepository.GetTriangleRowAndColumnByVertices(triangleGrid, vertices);
 
-            if (result.ToLower().LastIndexOf("invalid") > -1)
+            if (result.ToLower().Contains("invalid"))
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, result);
             }

@@ -65,6 +65,9 @@ namespace TriangleVerticesWebAPI.Models
             triangle = new Triangle();
             TriangleGrid tGrid = (TriangleGrid)grid;
 
+            if (vertices == null || vertices.Length == 0)
+                return false;
+
             //split on commas and/or spaces
             string[] strVertices = vertices.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
