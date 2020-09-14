@@ -8,7 +8,7 @@ namespace TriangleVerticesWebAPI.Models
 {
     public abstract class ShapesGrid
     {
-        public virtual int RowCount { get; set; }
-        public virtual int ColumnCount { get; set; }
+        internal virtual int RowCount { get; set; }
+        internal virtual int ColumnCount { get; set; }
     }
 }

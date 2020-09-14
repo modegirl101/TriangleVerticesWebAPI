@@ -9,8 +9,8 @@ namespace TriangleVerticesWebAPI.Models
 {
     public class TriangleGrid : ShapesGrid
     {
-        public int PixelCount { get { return 10; } }
-        public override int ColumnCount { get { return 12; } }
-        public override int RowCount { get { return 6; } }
+        internal int PixelCount { get { return 10; } }
+        internal override int ColumnCount { get { return 12; } }
+        internal override int RowCount { get { return 6; } }
     }
 }

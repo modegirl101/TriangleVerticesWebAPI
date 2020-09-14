@@ -9,78 +9,49 @@ namespace TriangleVerticesWebAPI.Models
 {
     public static class TriangleFunctions
     {
-        public static bool isXNumberValid(int xNumber, TriangleGrid tGrid)
+        internal static bool isXNumberValid(int xNumber, TriangleGrid tGrid)
         {
             return xNumber % 10 == 0 && xNumber <= (tGrid.ColumnCount / 2) * tGrid.PixelCount;
         }
-        public static bool isYNumberValid(int yNumber, TriangleGrid tGrid)
+        internal static bool isYNumberValid(int yNumber, TriangleGrid tGrid)
         {
             return yNumber % 10 == 0 && yNumber <= tGrid.RowCount * tGrid.PixelCount;
         }
-        public static bool isLetterValid(char letter, TriangleGrid tGrid)
+        internal static bool isLetterValid(char letter, TriangleGrid tGrid)
         {
             if (!char.IsLetter(letter))
             {
                 return false;
             }
 
-            return char.ToUpper(letter) - 64 <= tGrid.RowCount;                     
+            return char.ToUpper(letter) - 64 <= tGrid.RowCount;
         }
-        public static bool IsColumnValid(int column, TriangleGrid tGrid)
+        internal static bool IsColumnValid(int column, TriangleGrid tGrid)
         {
             return column >= 1 && column <= tGrid.ColumnCount;
         }
-        public static int GetColumn(Triangle.TriangleHypotenuseSide side, int col)
+        internal static int GetColumn(Triangle.TriangleHypotenuseSide side, int col)
         {
-            return side == Triangle.TriangleHypotenuseSide.Right ? (col * 2) : (col * 2) - 1;      
+            return side == Triangle.TriangleHypotenuseSide.Right ? (col * 2) : (col * 2) - 1;
         }
-        public static string GetRowAndColumnByVerticies(string[] vertices, TriangleGrid tGrid)
+
+        internal static string GetRowAndColumnByVertices(Triangle triangle, TriangleGrid tGrid)
         {
-            int row, col, highY, highX;
-
-            Triangle triangle = new Triangle();
-            //hypotenuse
-            triangle.Vector1X = int.Parse(vertices[0]);
-            triangle.Vector1Y = int.Parse(vertices[1]);
-
-            //top
-            triangle.Vector2X = int.Parse(vertices[2]);
-            triangle.Vector2Y = int.Parse(vertices[3]);
-
-            //bottom
-            triangle.Vector3X = int.Parse(vertices[4]);
-            triangle.Vector3Y = int.Parse(vertices[5]);
-
-            if (triangle.Vector1Y > triangle.Vector2Y)
-            {
-                triangle.HypotenuseSide = Triangle.TriangleHypotenuseSide.Left;
-
-                //highest y
-                highY = triangle.Vector1Y;
-
-                //if (highY - 10 != triangle.Vector2Y)
-                //    return invalid;
-            }
-            else
-            {
-                triangle.HypotenuseSide = Triangle.TriangleHypotenuseSide.Right;
-                highY = triangle.Vector3Y;
-            }
+            //highest Y
+            int highY = triangle.HypotenuseSide == Triangle.TriangleHypotenuseSide.Right ? triangle.Vector3Y : triangle.Vector1Y;
 
             //highest x
-            highX = triangle.Vector3X;
+            int highX = triangle.Vector3X;
 
-            row = highY / tGrid.PixelCount;
-            col = highX / tGrid.PixelCount;
+            int row = highY / tGrid.PixelCount;
+            int col = highX / tGrid.PixelCount;
 
-            //col = TriangleFunctions.GetColumn(triangle.HypotenuseSide, col);
-            //char rowChar = (char)(65 + (row - 1));
-
-            return string.Concat((65 + (row - 1)), TriangleFunctions.GetColumn(triangle.HypotenuseSide, col));
-            //return string.Concat(rowChar.ToString(), col.ToString());
+            char rowChar = (char)(65 + (row - 1));
+            return string.Concat(rowChar, GetColumn(triangle.HypotenuseSide, col));
         }
-        public static string GetVerticesByRowAndColumn(char row, int column, TriangleGrid tGrid)
-        {            
+        
+        internal static string GetVerticesByRowAndColumn(char row, int column, TriangleGrid tGrid)
+        {
             int rowNumber = row % 32; //get the index of the row -- this returns the index of the alphabet according to the row
             int colNumber = column / 2;  //each column is actually 2 numbers
 
@@ -115,6 +86,122 @@ namespace TriangleVerticesWebAPI.Models
             StringBuilder sb = new StringBuilder();
             sb.Append($"{triangle.Vector1X},{triangle.Vector1Y},{triangle.Vector2X},{triangle.Vector2Y},{triangle.Vector3X},{triangle.Vector3Y}");
             return sb.ToString();
+        }
+
+        internal static bool ValidateVertices(string vertices, ShapesGrid grid, out Triangle triangle)
+        {
+            triangle = new Triangle();
+            TriangleGrid tGrid = (TriangleGrid)grid;
+
+            //split on commas and/or spaces
+            string[] strVertices = vertices.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            ////we should have 6 numbers -- V1xy, V2xy, V3xy
+            if (strVertices.Length == 6)
+            {
+                for (int i = 0; i < strVertices.Length; i++)
+                {
+                    string str = strVertices[i];
+                    //validate input for numbers            
+                    if (int.TryParse(str, out int outNum))
+                    {
+                        switch (i)
+                        {
+                            //0 and 1 = hypotenuse
+                            case 0:
+                                if (!isXNumberValid(outNum, tGrid))
+                                    return false;
+
+                                triangle.Vector1X = outNum;
+                                break;
+                            case 1:
+                                if (!isYNumberValid(outNum, tGrid))
+                                    return false;
+
+                                triangle.Vector1Y = outNum;
+                                break;
+                            //2 and 3 = top
+                            case 2:
+                                if (!isXNumberValid(outNum, tGrid))
+                                    return false;
+
+                                triangle.Vector2X = outNum;
+                                break;
+                            case 3:
+                                if (!isYNumberValid(outNum, tGrid))
+                                    return false;
+
+                                triangle.Vector2Y = outNum;
+                                break;
+                            //4 and 5 = bottom
+                            case 4:
+                                if (!isXNumberValid(outNum, tGrid))
+                                    return false;
+
+                                triangle.Vector3X = outNum;
+                                break;
+                            case 5:
+                                if (!isYNumberValid(outNum, tGrid))
+                                    return false;
+
+                                triangle.Vector3Y = outNum;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        //no int
+                        return false;
+                    }
+                }
+
+                //continue validation
+                if (triangle.Vector1Y > triangle.Vector2Y)
+                {
+                    triangle.HypotenuseSide = Triangle.TriangleHypotenuseSide.Left;
+
+                    //40,10,40,0,50,10    A9 
+                    //30,30,30,20,40,30   C7
+                    //30,40,30,30,40,40   D7
+                    //50,40,50,30,60,40   D11
+
+                    //validate x pattern
+                    //x    x   x+pixelcount
+                    if (triangle.Vector1X == triangle.Vector2X && (triangle.Vector3X == (triangle.Vector1X + tGrid.PixelCount)))
+                    {
+                        //validate y pattern
+                        //y    y-pixencount   y
+                        if (triangle.Vector1Y == triangle.Vector3Y && (triangle.Vector2Y == (triangle.Vector1Y - tGrid.PixelCount)))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                else
+                {
+                    triangle.HypotenuseSide = Triangle.TriangleHypotenuseSide.Right;
+
+                    //40,0,30,0,40,10     A8 
+                    //40,20,30,20,40,30   C8
+                    //40,30,30,30,40,40   D8
+                    //50,30,40,30,50,40   D10
+
+                    //validate x pattern
+                    //x    x-pixelcount   x
+                    if (triangle.Vector1X == triangle.Vector3X && (triangle.Vector2X == (triangle.Vector1X - tGrid.PixelCount)))
+                    {
+                        //validate y pattern
+                        //y    y    y+pixelcount
+                        if (triangle.Vector1Y == triangle.Vector2Y && (triangle.Vector3Y == (triangle.Vector1Y + tGrid.PixelCount)))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            //validation has failed
+            return false;
         }
     }
 }

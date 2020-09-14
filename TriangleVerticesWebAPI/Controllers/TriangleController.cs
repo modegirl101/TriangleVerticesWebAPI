@@ -21,12 +21,12 @@ namespace TriangleVerticesWebAPI.Controllers
         {
             string result = triangleRepository.GetTriangleVerticesByRowAndColumn(triangleGrid, row, column);
 
-            if (result.Split(',').Length == 6)
+            if (result.ToLower().LastIndexOf("invalid") > -1)
             {
-                return Request.CreateResponse(HttpStatusCode.OK, result);
+                return Request.CreateResponse(HttpStatusCode.NotFound, result);
             }
 
-            return Request.CreateResponse(HttpStatusCode.NotFound, result);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
 
